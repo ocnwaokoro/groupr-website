@@ -1,0 +1,14 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+
+# Coding workflow preferences
+
+- Focus on the areas of code relevant to the task
+- Do not touch code that is unrelated to the task
+- Write thorough test for all majo functionality 
+- Avoid making major changes to the patterns and architechture of how a feature works, after it has shown to work well, unless explicitly instructed
+- Always think about what other method and areas of code might be affected by code changes
+- Whenever you find a dependency that requires a lower version than the one currently install always opt to update the dependency with the 
