@@ -1,5 +1,4 @@
 name: groupr
-version: '3.8'
 
 services:
   db:
