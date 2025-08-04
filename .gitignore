@@ -3,11 +3,11 @@ env/*.env.
 # macOS files
 .DS_Store
 **/.DS_Store
-*/frontend/**
-*/backend/**
-*/frontend/node_modules/**
-*/backend/node_modules/**
-*/frontend/dist/**
+frontend/**
+backend/**
+frontend/node_modules/**
+backend/node_modules/**
+frontend/dist/**
 */backend/dist/**
 */frontend/build/**
 *.env
@@ -21,3 +21,4 @@ env/*.env.
 /frontend
 .terraform
 *.tfvars
+Requirements/**
