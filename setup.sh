@@ -23,7 +23,12 @@ docker-compose up -d db
 echo "=====> Building Backend Service"
 docker-compose build --no-cache backend
 echo "=====> Seting up Backend Databases"
-docker-compose run --rm --no-deps backend rails db:setup
+echo "=====> Creating Backend Databases"
+docker-compose run --rm --no-deps backend rails db:create 
+echo "=====> Migrating Backend Databases"
+docker-compose run --rm --no-deps backend rails db:migrate 
+echo "=====> Seeding Backend Databases"
+docker-compose run --rm --no-deps backend rails db:seed 
 echo "=====> Building Frontend Service"
 docker-compose build --no-cache frontend
 echo "=====> Seting up Frontend Dependencies"
