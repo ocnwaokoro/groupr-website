@@ -17,23 +17,23 @@ else
   git clone $FRONTEND_REPO frontend
 fi
 echo "=====> Building DB Service"
-docker-compose build --no-cache db
+docker compose build --no-cache db
 echo "=====> Starting DB Service"
-docker-compose up -d db
+docker compose up -d db
 echo "=====> Building Backend Service"
-docker-compose build --no-cache backend
+docker compose build --no-cache backend
 echo "=====> Seting up Backend Databases"
 echo "=====> Creating Backend Databases"
-docker-compose run --rm --no-deps backend rails db:create 
+docker compose run --rm --no-deps backend rails db:create 
 echo "=====> Migrating Backend Databases"
-docker-compose run --rm --no-deps backend rails db:migrate 
+docker compose run --rm --no-deps backend rails db:migrate 
 echo "=====> Seeding Backend Databases"
-docker-compose run --rm --no-deps backend rails db:seed 
+docker compose run --rm --no-deps backend rails db:seed 
 echo "=====> Building Frontend Service"
-docker-compose build --no-cache frontend
+docker compose build --no-cache frontend
 echo "=====> Seting up Frontend Dependencies"
-docker-compose run --rm --no-deps frontend npm install
+docker compose run --rm --no-deps frontend npm install
 echo "=====> Starting Backend Service"
-docker-compose up -d backend
+docker compose up -d backend
 echo "=====> Starting Frontend Service"
-docker-compose up -d frontend
+docker compose up -d frontend
