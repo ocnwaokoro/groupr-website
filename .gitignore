@@ -22,3 +22,14 @@ frontend/dist/**
 .terraform
 *.tfvars
 Requirements/**
+
+
+.envrc
+GCLOUD_SETUP.md
+.gcloud-credentials.json
+
+
+terraform.tfstate*
+.terraform.tfstate.lock.info
+terraform-state-backup/
+disabled/
