@@ -1,0 +1,10 @@
+{
+  "git.detectSubmodules": true,
+  "git.autoRepositoryDetection": true,
+  "git.scanRepositories": [
+    "${workspaceFolder}",
+    "${workspaceFolder}/backend",
+    "${workspaceFolder}/frontend",
+    "${workspaceFolder}/infraestructure"
+  ]
+}
