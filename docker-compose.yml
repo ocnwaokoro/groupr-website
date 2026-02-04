@@ -33,6 +33,20 @@ services:
       - db
     env_file:
       - env/rails.env
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.api.rule=Host(`api.groupr.local`)"
+      - "traefik.http.routers.api.entrypoints=web"
+      - "traefik.http.routers.api.service=backend"
+      - "traefik.http.services.backend.loadbalancer.server.port=3000"
+      - "traefik.http.middlewares.api-passthrough.headers.customRequestHeaders.Host=api.groupr.local"
+      - "traefik.http.routers.api.middlewares=api-passthrough"
+      - "traefik.http.routers.admin.rule=Host(`admin.groupr.local`)"
+      - "traefik.http.routers.admin.entrypoints=web"
+      - "traefik.http.routers.admin.service=backend"
+      - "traefik.http.routers.cdn.rule=Host(`cdn.groupr.local`)"
+      - "traefik.http.routers.cdn.entrypoints=web"
+      - "traefik.http.routers.cdn.service=backend"
 
   sidekiq:
     build:
@@ -66,6 +80,28 @@ services:
       - "4000:4000"
     env_file:
       - env/react.env
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.frontend.rule=Host(`dev.groupr.local`)"
+      - "traefik.http.routers.frontend.entrypoints=web"
+      - "traefik.http.services.frontend.loadbalancer.server.port=4000"
+
+  traefik:
+    image: traefik:v2.10
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.forwardedHeaders.trustedIPs=127.0.0.1/32,172.16.0.0/12"
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    depends_on:
+      - backend
+      - frontend
 
 volumes:
   postgres_data: 

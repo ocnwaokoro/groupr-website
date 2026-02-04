@@ -31,6 +31,7 @@ add_hosts_entries() {
     "127.0.0.1 api.groupr.local"
     "127.0.0.1 admin.groupr.local"
     "127.0.0.1 dev.groupr.local"
+    "127.0.0.1 cdn.groupr.local"
   )
 
   # Check if hosts file exists
@@ -94,26 +95,43 @@ else
   echo "=====> Cloning $FRONTEND_REPO"
   git clone $FRONTEND_REPO frontend
 fi
-echo "=====> Building DB Service"
-docker compose build --no-cache db
+
+# Kill any running containers
+echo "=====> Stopping and removing any running containers"
+docker compose down
+
+# Build all services first
+echo "=====> Building all services"
+docker compose build --no-cache
+
+# Start DB service for setup
 echo "=====> Starting DB Service"
 docker compose up -d db
-echo "=====> Building Backend Service"
-docker compose build --no-cache backend
-echo "=====> Seting up Backend Databases"
+
+# Wait for DB to be ready
+echo "=====> Waiting for database to be ready"
+sleep 5
+
+# Setup Backend Databases
+echo "=====> Setting up Backend Databases"
 echo "=====> Creating Backend Databases"
 docker compose run --rm --no-deps backend rails db:create 
 echo "=====> Migrating Backend Databases"
 docker compose run --rm --no-deps backend rails db:migrate 
 echo "=====> Seeding Backend Databases"
 docker compose run --rm --no-deps backend rails db:seed 
-echo "=====> Building Frontend Service"
-docker compose build --no-cache frontend
-echo "=====> Seting up Frontend Dependencies"
+
+# Setup Frontend Dependencies
+echo "=====> Setting up Frontend Dependencies"
 docker compose run --rm --no-deps frontend npm install
-echo "=====> Starting Backend Service"
-docker compose up -d backend
-echo "=====> Starting Frontend Service"
-docker compose up -d frontend
+
+echo "=====> Stopping and removing any running containers"
+docker compose down
+
+# Start all services
+echo "=====> Starting all services"
+docker compose up -d
+
+# Configure hosts entries
 echo "=====> Configuring /etc/hosts entries"
 add_hosts_entries
