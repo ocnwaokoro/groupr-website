@@ -1,0 +1,752 @@
+.catalogMobileVCategory {
+  	width: 100%;
+  	height: 5472px;
+  	position: relative;
+  	background-color: #fffefc;
+  	text-align: center;
+  	font-size: 16px;
+  	color: #332f29;
+  	font-family: Inter;
+}
+.autolayoutFrame {
+  	position: absolute;
+  	top: 0px;
+  	left: 0px;
+  	width: 375px;
+  	display: flex;
+  	flex-direction: column;
+  	align-items: flex-start;
+  	isolation: isolate;
+  	flex-shrink: 0;
+}
+.navbar {
+  	width: 375px;
+  	display: flex;
+  	flex-direction: column;
+  	align-items: flex-start;
+  	z-index: 4;
+}
+.navbarTop {
+  	align-self: stretch;
+  	background-color: #fffefc;
+  	display: flex;
+  	flex-direction: column;
+  	align-items: center;
+  	justify-content: center;
+  	padding: 0px 8px 0px 20px;
+}
+.container {
+  	width: 100%;
+  	display: flex;
+  	align-items: center;
+  	padding: 12px 0px 8px;
+  	box-sizing: border-box;
+  	gap: 2px;
+  	max-width: 100%;
+}
+.logoWrapper {
+  	flex: 1;
+  	display: flex;
+  	align-items: center;
+}
+.logo {
+  	height: 32px;
+  	width: 37px;
+  	position: relative;
+}
+.vectorGroupIcon {
+  	position: absolute;
+  	height: 100%;
+  	width: 100%;
+  	top: 0%;
+  	right: 0%;
+  	bottom: 0%;
+  	left: 0%;
+  	max-width: 100%;
+  	overflow: hidden;
+  	max-height: 100%;
+}
+.navIcons {
+  	width: 40px;
+  	display: flex;
+  	align-items: flex-start;
+}
+.navLinkicon {
+  	width: 52px;
+  	display: flex;
+  	align-items: flex-start;
+  	flex-shrink: 0;
+}
+.content {
+  	display: flex;
+  	flex-direction: column;
+  	align-items: center;
+  	padding: 0px 4px;
+}
+.iconwrapper {
+  	display: flex;
+  	align-items: flex-start;
+}
+.icon {
+  	width: 24px;
+  	position: relative;
+  	max-height: 100%;
+}
+.borderBottom {
+  	align-self: stretch;
+  	height: 1px;
+  	position: relative;
+  	background-color: #fffefc;
+}
+.mobileMenuWrapper {
+  	height: 48px;
+  	width: 48px;
+}
+.banner {
+  	align-self: stretch;
+  	background-color: #00473d;
+  	overflow: hidden;
+  	display: flex;
+  	align-items: center;
+  	padding: 16px 20px;
+  	position: relative;
+  	isolation: isolate;
+  	gap: 80px;
+  	z-index: 3;
+  	color: #fffefc;
+}
+.content2 {
+  	flex: 1;
+  	display: flex;
+  	flex-direction: column;
+  	align-items: center;
+  	gap: 8px;
+  	z-index: 0;
+  	flex-shrink: 0;
+}
+.loremIpsumDolor {
+  	align-self: stretch;
+  	position: relative;
+  	line-height: 160%;
+  	font-weight: 600;
+}
+.button {
+  	border-radius: 12px;
+  	display: flex;
+  	align-items: flex-start;
+  	color: #332f29;
+}
+.button2 {
+  	border-radius: 12px;
+  	background-color: #fffefc;
+  	overflow: hidden;
+  	display: flex;
+  	align-items: center;
+  	justify-content: center;
+  	padding: 8px 16px;
+}
+.text {
+  	position: relative;
+  	line-height: 145%;
+  	font-weight: 600;
+}
+.clearIcon {
+  	height: 24px;
+  	width: 24px;
+  	position: absolute;
+  	margin: 0 !important;
+  	top: 8px;
+  	right: 8px;
+  	z-index: 1;
+  	flex-shrink: 0;
+}
+.searchHeaderWrapper {
+  	align-self: stretch;
+  	display: flex;
+  	flex-direction: column;
+  	align-items: flex-start;
+  	padding: 20px 0px;
+  	z-index: 2;
+  	text-align: left;
+  	font-size: 18px;
+  	color: #000;
+  	font-family: 'DM Sans';
+}
+.searchHeader {
+  	align-self: stretch;
+  	background-color: #d5e68b;
+  	display: flex;
+  	flex-direction: column;
+  	align-items: center;
+  	justify-content: center;
+  	padding: 20px;
+  	gap: 20px;
+}
+.whatAreYou {
+  	position: relative;
+  	line-height: 140%;
+}
+.searchBar {
+  	align-self: stretch;
+  	display: flex;
+  	align-items: center;
+  	font-size: 16px;
+  	color: #999489;
+  	font-family: Inter;
+}
+.inputField {
+  	flex: 1;
+  	display: flex;
+  	flex-direction: column;
+  	align-items: flex-start;
+}
+.inputText {
+  	align-self: stretch;
+  	border-radius: 4px;
+  	background-color: #fffefc;
+  	border: 1px solid #47433a;
+  	display: flex;
+  	align-items: flex-start;
+  	padding: 8px 12px;
+}
+.content3 {
+  	flex: 1;
+  	display: flex;
+  	align-items: center;
+  	gap: 8px;
+}
+.placeholder {
+  	flex: 1;
+  	position: relative;
+  	line-height: 145%;
+}
+.sectionProducts {
+  	align-self: stretch;
+  	background-color: #fffefc;
+  	display: flex;
+  	flex-direction: column;
+  	align-items: center;
+  	padding: 20px 20px 80px;
+  	gap: 64px;
+  	z-index: 1;
+  	font-size: 12px;
+}
+.categoryWrapper {
+  	align-self: stretch;
+  	height: 114px;
+  	position: relative;
+  	overflow: hidden;
+  	flex-shrink: 0;
+  	color: #161411;
+}
+.arrowBackIosIcon {
+  	position: absolute;
+  	top: 28px;
+  	left: 0px;
+  	width: 24px;
+  	height: 24px;
+}
+.categoryCardRow {
+  	position: absolute;
+  	top: 0px;
+  	left: 24px;
+  	width: 287px;
+  	height: 114px;
+  	overflow: hidden;
+}
+.categoryRow {
+  	position: absolute;
+  	top: 0px;
+  	left: 0px;
+  	display: flex;
+  	align-items: center;
+  	gap: 20px;
+  	flex-shrink: 0;
+}
+.categoryCard {
+  	width: 80px;
+  	box-shadow: 0px 4px 8px -2px rgba(126, 141, 120, 0.01), 0px 2px 4px -2px rgba(0, 0, 0, 0.03);
+  	display: flex;
+  	flex-direction: column;
+  	align-items: center;
+}
+.imageAndButtonWrapper {
+  	box-shadow: 0px 4px 8px -2px rgba(126, 141, 120, 0.01), 0px 2px 4px -2px rgba(0, 0, 0, 0.03);
+  	border-radius: 24px;
+  	background-color: #ffc073;
+  	overflow: hidden;
+  	display: flex;
+  	align-items: center;
+  	padding: 8px;
+}
+.categoryIllustrations {
+  	height: 64px;
+  	width: 64px;
+  	position: relative;
+}
+.frameIcon {
+  	position: absolute;
+  	top: calc(50% - 32.65px);
+  	left: calc(50% - 32px);
+  	width: 64px;
+  	height: 64px;
+}
+.contentBottom {
+  	display: flex;
+  	flex-direction: column;
+  	align-items: center;
+  	padding: 12px;
+}
+.header {
+  	display: flex;
+  	flex-direction: column;
+  	align-items: center;
+  	justify-content: center;
+}
+.itemName {
+  	position: relative;
+  	line-height: 150%;
+  	font-weight: 600;
+}
+.imageAndButtonWrapper2 {
+  	box-shadow: 0px 4px 8px -2px rgba(126, 141, 120, 0.01), 0px 2px 4px -2px rgba(0, 0, 0, 0.03);
+  	border-radius: 24px;
+  	background-color: #fff1de;
+  	overflow: hidden;
+  	display: flex;
+  	align-items: center;
+  	padding: 8px;
+}
+.frameIcon2 {
+  	position: absolute;
+  	top: calc(50% - 32px);
+  	left: calc(50% - 32px);
+  	width: 64px;
+  	height: 64px;
+}
+.imageAndButtonWrapper3 {
+  	box-shadow: 0px 4px 8px -2px rgba(126, 141, 120, 0.01), 0px 2px 4px -2px rgba(0, 0, 0, 0.03);
+  	border-radius: 24px;
+  	background-color: #fff1de;
+  	overflow: hidden;
+  	display: flex;
+  	align-items: center;
+  	padding: 8px;
+  	flex-shrink: 0;
+}
+.categoryIllustrations3 {
+  	height: 64px;
+  	width: 64px;
+  	position: relative;
+  	overflow: hidden;
+  	flex-shrink: 0;
+}
+.contentBottom3 {
+  	display: flex;
+  	flex-direction: column;
+  	align-items: center;
+  	padding: 12px;
+  	flex-shrink: 0;
+}
+.arrowForwardIosIcon {
+  	position: absolute;
+  	top: 28px;
+  	right: 0px;
+  	width: 24px;
+  	height: 24px;
+}
+.content4 {
+  	align-self: stretch;
+  	display: flex;
+  	flex-direction: column;
+  	align-items: flex-start;
+  	justify-content: center;
+  	gap: 40px;
+  	font-size: 36px;
+  	font-family: 'DM Sans';
+}
+.title {
+  	align-self: stretch;
+  	display: flex;
+  	flex-direction: column;
+  	align-items: flex-end;
+  	justify-content: flex-end;
+}
+.content5 {
+  	align-self: stretch;
+  	display: flex;
+  	flex-direction: column;
+  	align-items: flex-start;
+}
+.heading {
+  	position: relative;
+  	line-height: 120%;
+  	font-weight: 600;
+}
+.productGrid {
+  	align-self: stretch;
+  	display: flex;
+  	align-items: flex-start;
+  	justify-content: space-between;
+  	flex-wrap: wrap;
+  	align-content: flex-start;
+  	gap: 16px 15px;
+  	text-align: left;
+  	font-size: 16px;
+  	font-family: Inter;
+}
+.productCard {
+  	box-shadow: 0px 4px 8px -2px rgba(126, 141, 120, 0.01), 0px 2px 4px -2px rgba(0, 0, 0, 0.03);
+  	border-radius: 20px;
+  	background-color: #faf8f5;
+  	overflow: hidden;
+  	display: flex;
+  	flex-direction: column;
+  	align-items: flex-start;
+}
+.imageWrapper {
+  	width: 160px;
+  	height: 120px;
+  	display: flex;
+  	flex-direction: column;
+  	align-items: flex-end;
+  	padding: 8px 8px 0px;
+  	box-sizing: border-box;
+  	position: relative;
+  	isolation: isolate;
+}
+.imageIcon {
+  	align-self: stretch;
+  	flex: 1;
+  	position: relative;
+  	max-width: 100%;
+  	overflow: hidden;
+  	max-height: 100%;
+  	object-fit: cover;
+  	z-index: 0;
+  	flex-shrink: 0;
+}
+.addToCartButtonclosed {
+  	margin: 0 !important;
+  	position: absolute;
+  	top: 80px;
+  	left: 116px;
+  	box-shadow: 0px 4px 12px -2px rgba(0, 0, 0, 0.05), 0px 2px 8px -2px rgba(0, 0, 0, 0.06);
+  	border-radius: 40px;
+  	background-color: #b3cf34;
+  	display: flex;
+  	align-items: center;
+  	justify-content: center;
+  	padding: 8px;
+  	z-index: 1;
+  	flex-shrink: 0;
+}
+.contentBottom9 {
+  	align-self: stretch;
+  	height: 136px;
+  	display: flex;
+  	flex-direction: column;
+  	align-items: center;
+  	justify-content: flex-end;
+  	padding: 12px;
+  	box-sizing: border-box;
+  	gap: 12px;
+}
+.details {
+  	width: 136px;
+  	flex: 1;
+  	display: flex;
+  	flex-direction: column;
+  	align-items: flex-start;
+  	gap: 4px;
+  	font-size: 20px;
+}
+.price {
+  	position: relative;
+  	line-height: 150%;
+  	font-weight: 600;
+  	flex-shrink: 0;
+}
+.description {
+  	position: relative;
+  	font-size: 14px;
+  	line-height: 150%;
+  	flex-shrink: 0;
+}
+.description7 {
+  	position: relative;
+  	font-size: 14px;
+  	line-height: 150%;
+}
+.paginationRow {
+  	display: flex;
+  	align-items: center;
+  	gap: 8px;
+  	text-align: left;
+  	font-size: 16px;
+}
+.paginationButton {
+  	height: 32px;
+  	border-radius: 4px;
+  	background-color: #fffefc;
+  	border: 1px solid #ccc8c1;
+  	box-sizing: border-box;
+  	display: flex;
+  	align-items: center;
+  	justify-content: center;
+  	padding: 4px;
+}
+.paginationButton3 {
+  	height: 32px;
+  	width: 32px;
+  	border-radius: 4px;
+  	background-color: #00473d;
+  	display: flex;
+  	align-items: center;
+  	justify-content: center;
+  	padding: 4px;
+  	box-sizing: border-box;
+  	color: #fffefc;
+}
+.paginationButton4 {
+  	height: 32px;
+  	width: 32px;
+  	border-radius: 4px;
+  	background-color: #fffefc;
+  	border: 1px solid #ccc8c1;
+  	box-sizing: border-box;
+  	display: flex;
+  	align-items: center;
+  	justify-content: center;
+  	padding: 4px;
+}
+.paginationButton5 {
+  	height: 32px;
+  	width: 32px;
+  	border-radius: 4px;
+  	background-color: #fffefc;
+  	border: 1px solid #ccc8c1;
+  	box-sizing: border-box;
+  	display: flex;
+  	align-items: center;
+  	justify-content: center;
+  	padding: 4px;
+  	font-size: 12px;
+  	color: #706a60;
+}
+.button5 {
+  	position: relative;
+  	letter-spacing: 0.01em;
+  	line-height: 16px;
+  	font-weight: 500;
+}
+.merchantId {
+  	display: flex;
+  	flex-direction: column;
+  	align-items: center;
+  	justify-content: center;
+  	gap: 4px;
+  	text-align: right;
+  	font-size: 14px;
+}
+.merchantIdTopLine {
+  	display: flex;
+  	align-items: center;
+  	gap: 10px;
+}
+.itemsFulfilledBy {
+  	position: relative;
+  	line-height: 150%;
+}
+.foodtownLogoIcon {
+  	width: 110px;
+  	position: relative;
+  	max-height: 100%;
+  	object-fit: cover;
+}
+.foodtown4733Bell {
+  	position: relative;
+  	font-size: 12px;
+  	line-height: 150%;
+}
+.footer {
+  	align-self: stretch;
+  	background-color: #f1f7d9;
+  	overflow: hidden;
+  	display: flex;
+  	flex-direction: column;
+  	align-items: flex-start;
+  	padding: 64px 20px;
+  	gap: 40px;
+  	z-index: 0;
+  	text-align: left;
+}
+.links {
+  	align-self: stretch;
+  	display: flex;
+  	flex-direction: column;
+  	align-items: center;
+  	gap: 40px;
+}
+.column {
+  	align-self: stretch;
+  	overflow: hidden;
+  	display: flex;
+  	flex-direction: column;
+  	align-items: flex-start;
+}
+.logo2 {
+  	width: 90.1px;
+  	height: 78px;
+  	position: relative;
+}
+.footerLinks {
+  	align-self: stretch;
+  	display: flex;
+  	align-items: flex-start;
+  	flex-wrap: wrap;
+  	align-content: flex-start;
+  	gap: 40px;
+}
+.column2 {
+  	flex: 1;
+  	overflow: hidden;
+  	display: flex;
+  	flex-direction: column;
+  	align-items: flex-start;
+  	gap: 16px;
+}
+.columnTwo {
+  	align-self: stretch;
+  	position: relative;
+  	line-height: 150%;
+  	font-weight: 600;
+}
+.link {
+  	align-self: stretch;
+  	display: flex;
+  	align-items: flex-start;
+  	padding: 8px 0px;
+}
+.linkEight {
+  	flex: 1;
+  	position: relative;
+  	line-height: 150%;
+  	font-weight: 500;
+}
+.newsletter {
+  	align-self: stretch;
+  	display: flex;
+  	flex-direction: column;
+  	align-items: flex-start;
+  	gap: 24px;
+}
+.subscribeParent {
+  	align-self: stretch;
+  	display: flex;
+  	flex-direction: column;
+  	align-items: flex-start;
+  	gap: 16px;
+}
+.joinOurNewsletter {
+  	align-self: stretch;
+  	position: relative;
+  	line-height: 160%;
+}
+.actions {
+  	align-self: stretch;
+  	display: flex;
+  	flex-direction: column;
+  	align-items: flex-start;
+  	gap: 12px;
+  	color: #999489;
+}
+.inputField2 {
+  	align-self: stretch;
+  	height: 48px;
+  	display: flex;
+  	flex-direction: column;
+  	align-items: flex-start;
+}
+.inputText2 {
+  	align-self: stretch;
+  	flex: 1;
+  	border-radius: 4px;
+  	background-color: #fffefc;
+  	border: 1px solid #47433a;
+  	display: flex;
+  	align-items: center;
+  	padding: 8px 12px;
+}
+.button7 {
+  	align-self: stretch;
+  	border-radius: 12px;
+  	display: flex;
+  	align-items: flex-start;
+  	text-align: center;
+  	color: #fffefc;
+}
+.button8 {
+  	flex: 1;
+  	border-radius: 12px;
+  	background-color: #332f29;
+  	overflow: hidden;
+  	display: flex;
+  	align-items: center;
+  	justify-content: center;
+  	padding: 12px 20px;
+}
+.bySubscribingYou {
+  	align-self: stretch;
+  	position: relative;
+  	font-size: 14px;
+  	line-height: 150%;
+  	color: #332f29;
+}
+.credits {
+  	align-self: stretch;
+  	display: flex;
+  	flex-direction: column;
+  	align-items: flex-start;
+  	gap: 32px;
+  	font-size: 14px;
+}
+.divider {
+  	align-self: stretch;
+  	height: 1px;
+  	position: relative;
+  	background-color: #00473d;
+  	border: 1px solid #00473d;
+  	box-sizing: border-box;
+}
+.row {
+  	align-self: stretch;
+  	display: flex;
+  	flex-direction: column;
+  	align-items: flex-start;
+  	gap: 64px;
+}
+.credits2 {
+  	align-self: stretch;
+  	display: flex;
+  	align-items: center;
+  	flex-wrap: wrap;
+  	align-content: center;
+  	gap: 12px 24px;
+}
+.privacyPolicy {
+  	position: relative;
+  	text-decoration: underline;
+  	line-height: 150%;
+}
+.socialLinks {
+  	display: flex;
+  	align-items: flex-start;
+  	gap: 12px;
+}
+.socialIconIconFacebook {
+  	height: 24px;
+  	width: 24px;
+  	position: relative;
+}
+
