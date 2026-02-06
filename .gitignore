@@ -1,5 +1,6 @@
 # Dependencies and build
 node_modules
+.vite
 dist
 dist-ssr
 *.local
