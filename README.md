@@ -12,9 +12,9 @@ Affordable grocery delivery for NYC residents (SNAP/EBT). This repo contains the
   - Run: `cd catalog-page && npm install && npm run dev`
   - Build: `cd catalog-page && npm run build`
 
-- **`landing-page-mobile/`** – Mobile landing prototype (JSX + CSS snippets).
+- **`landing-page-mobile/`** – Mobile landing (Vite + React + Tailwind). Run: `cd landing-page-mobile && npm install && npm run dev`
 
-- **`catalog-page-mobile`** – Placeholder for future mobile catalog work.
+- **`catalog-page-mobile/`** – Mobile catalog (Vite + React + Tailwind). Run: `cd catalog-page-mobile && npm install && npm run dev`
 
 ## Stack
 
