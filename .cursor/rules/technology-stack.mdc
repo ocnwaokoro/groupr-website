@@ -1,0 +1,170 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+
+# Tehcnology Stack
+- Always keep backend and frontend separated between each other
+
+## Backend
+- Always write the backend code inside the backend folder, unless it is stated othewise.
+- Use Ruby 3.2
+- Use Ruby on Rails 7.2 for the Backend application logic.
+- Configure the Ruby on Raills application to use PostgreSQL as the database
+- Always use Ruby on Rails generators when creating a new endpoint, model or test
+- Always use jbuilder template files when responding any json response
+- Include debug gem in the development and test gemfile groups and use it as debugger.
+- Include dotenv-rails gem in the development and test gemfile groups and use it to load environment variables from local .env files in the project
+- Include factory_bot_rails gem in the development and test gemfile groups and use it to generate mock data in an organized way.
+- Include faker gem in the development and test gemfile groups and use it as a surce of mock data for factory_bot_rails gem methods.
+- Include rubocop-factory_bot, rubocop-rails and rubocop-rspec gems in the development and test gemfile groups and use them as linter and make sure to rub `rubocop` at the end of each code generartion to make sure the code is properly formatted.
+- Include rspec-rails gem in the test gemfile group and use it as core test framework instead of the default rails test framework
+- Include shoulda-matchewrs gem in the test gemfile group and use it to test rails models features, such as relationships and validations
+- Always use the config/database.yml file to connect to the database and use Enviaroment variables to define database name, database host, database usename and database 
+- Always add a comment parameter of the columns of new tables
+- Always add a comment parametter when adding a new column in an existing table
+- Always run rails or rake or any rails related command inside the backend container use the docker compose file define at the root of the project for referece
+
+### Testing
+- Under the context of backend code and testing such code the term "Framework Component" refers to any part that makes the Ruby on Rails framework, the different components that exists whitin the context of the frakework are:
+  - Models
+  - Migrations
+  - Controllers
+  - Views
+  - Helpers
+  - Rake Tasks
+  - Routes
+  - Mailers
+- When a prompt and/or rule use the word "spec" it referes a test file for a framework component
+- When a prompt and/or rule use the word "test" it referes to a specific test case of a framework component
+- Always use rspec to create new specs. Under no circumstance use the default rails test framework
+- Always When implementing a new feature create a spec for each of the framework component that feature requires with their corresponding test cases, In other words, if the new feature requires to create a new route, a new endpoint and a new model create a test for each one of those components validatig their functionality.
+- Always check if there is an existent rspec spec file before creating a spec for any component. If the spec already exists add the new test case to that spec
+- When creating test cases for any framework component create them using the `context` rspec method and group test cases into similar context in a way that the final test output looks similar to user story I.E:
+
+```
+context 'WHEN a user registers' do
+  context 'AND the there are not errors' do
+    it 'should respond with 201 status code do
+      # TEST CODE HERE...
+    end
+  end
+
+  context 'AND it did not suply an email' do
+    it 'should not create any new user register' do
+      # TEST CODE HERE...
+    end
+    it 'should respond with a 400 status code' do
+      # TEST CODE HERE...
+    end
+    it 'should respond with a response body with a message "Missing email"' do
+      # TEST CODE HERE...
+    end
+  end
+
+  context 'AND Password is invalid' do
+    it 'should not create any new user register' do
+      # TEST CODE HERE...
+    end
+    it 'should respond with a 400 status code' do
+      # TEST CODE HERE...
+    end
+    it 'should respond with a response body with a message "Passwords Invalid"' do
+      # TEST CODE HERE...
+    end
+  end
+```
+
+## Frontend
+- When writing code for the frontend the term "Componen" used in any rule and/or prompt refers to React UI Component
+- Use vite to setup the proyect
+- Use typescript
+- Use React
+- Use Chakra UI as design system and UI framework
+- Use React Router to route between pages
+- Use Axios to make request to the backend
+- Use react-query and use it alongside axios to make request to the backend using hooks
+- Use DayJS to manipulate dates
+- Use React Testing Library
+- Use Sass instead of css
+- The general structure of the src folder is the follwing one:
+    src/
+    ├── index.css
+    ├── main.tsx
+    ├── vite-env.d.ts
+    ├── assets/
+    │   ├── asset1.jpeg
+    │   ├── asset2.jpeg
+    │   └── asset3.svg
+    ├── common/
+    │   ├── Component1.ts
+    │   ├── Component2.tsx
+    │   ├── constants.ts
+    │   ├── ComplexComponent1/
+    │   │   ├── ComplexComponent1.tsx
+    │   │   ├── ComplexComponent1.css
+    │   │   └── ComplexComponent1.test.tsx
+    │   └── Types/
+    │       ├── type1.ts
+    │       ├── type2.ts
+    │       └── type3.ts
+    ├── hooks/
+    │   ├── useCustomHook1.ts
+    │   ├── useCustomHook2.ts
+    │   └── useCustomHook3.ts
+    ├── pages/
+    │   ├── Page1/
+    │   │   ├── Components/
+    │   │   │   ├── Component1.tsx
+    │   │   │   ├── Component2.tsx
+    │   │   │   └── Component3.tsx
+    │   │   ├── Styles/        
+    │   │   │   ├── Component1.scss
+    │   │   │   ├── Component2.scss
+    │   │   │   └── Component3.scss
+    │   │   └── index.tsx
+    ├── routing/
+    │   └── AppRouter.tsx
+    └── services/
+        ├── apiService1.ts
+        ├── apiService2.ts
+        └── apiService3.ts
+
+- Use the assets folder to store multimedia assets
+- Use the common folder to store common component used in more than two components
+- Use the hooks folder to store any custom hook for the website
+- Use the pages folder to store each webpage of the website, each webpage is a folder with and index.tsx exporting the a parent component that host all the components that compose that webpage.
+- Use the routing folder to store the react router component
+- Use the services folder to store any service used to connect to any bacvkend services wether is our own backend service or a third party
+- Always use factory bot to generate the instances of mock data and to generate the actual data use faker like the following example:
+
+```
+let(:user) = FactoryBot.create(email: Faker::Internet.email)
+```
+- While writting test NEVER use hard coded values instead make use of Faker API
+- Always run any npm related command inside the frontend container use the docker compose file define at the root of the project for referece
+
+### Component Structuring
+- Each Component should be names in camel case formart
+- Components can not have more than 25 lines of JSX template systax
+- When a component has more than 25 lines break it down into sub components and move them into their own file into the nearesrt `Components` folder
+- Components exported inside a index.tsx file are considered Main Components
+- Components defined under any folder named `Components` are considered Small Components
+- All Webpages are Main Components 
+- When styling components write the styles in scss files under the nearest Styles that is at the same level as the parent `Components` folder and name the file with the same name as the component styled by that scss file.
+- Always write a tests for Small Components, use react testing library to tests all use case of that component.
+- Always save the test file next to the component is testing with the format Component1.test.tsx
+- If a test file for a component already exists NEVER delete it or overwrite it, instead, append the new test case to the existant file
+- General structure of a main component:
+
+    MainComponent/
+      ├── Components/
+      │   ├── Component1.tsx
+      │   ├── Component2.tsx
+      │   └── Component3.tsx
+      ├── Styles/        
+      │   ├── Component1.scss
+      │   ├── Component2.scss
+      │   └── Component3.scss
+      └── index.tsx

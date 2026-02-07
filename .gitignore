@@ -12,10 +12,42 @@ scrap/
 *.log
 npm-debug.log*
 .DS_Store
+**/.DS_Store
 .env
 .env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.development
+.env.test
+env/*.env.
 
 # Editor
 .vscode/*
 !.vscode/extensions.json
 .idea
+
+# macOS files
+frontend/**
+backend/**
+infraestructure/**
+frontend/node_modules/**
+backend/node_modules/**
+frontend/dist/**
+*/backend/dist/**
+*/frontend/build/**
+/backend
+/frontend
+/infraestructure
+.terraform
+*.tfvars
+Requirements/**
+
+.envrc
+GCLOUD_SETUP.md
+.gcloud-credentials.json
+
+terraform.tfstate*
+.terraform.tfstate.lock.info
+terraform-state-backup/
+disabled/
