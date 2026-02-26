@@ -37,6 +37,7 @@ frontend/dist/**
 */backend/dist/**
 */frontend/build/**
 /backend
+/devenv-main
 /frontend
 /infraestructure
 .terraform
