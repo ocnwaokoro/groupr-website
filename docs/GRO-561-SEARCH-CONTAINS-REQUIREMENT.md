@@ -1,0 +1,3 @@
+# Search: “contains” matching requirement
+
+**What is needed:** Catalog search must match when the user’s query appears **inside** the product name or description (substring/“contains” match), not only when it matches a full word. For example, typing “app” should return “Apple” and “Organic Apples”; typing “choc” should return “Chocolate Bar”. This behavior is implemented on the **backend** that serves the catalog search endpoint (e.g. `GET /api/catalog/search` with param `q`). The frontend only sends `q` and displays the API response, so the backend should filter products using a contains-style condition (e.g. `ILIKE '%term%'` in SQL, with proper sanitization) on `name` and optionally `description`, instead of full-word or exact-match logic.
