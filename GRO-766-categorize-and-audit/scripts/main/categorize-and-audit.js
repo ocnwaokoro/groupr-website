@@ -54,13 +54,28 @@ function escapeRegex(s) {
 function buildKeywordRegex(keyword) {
   // Match the keyword as a whole phrase, case-insensitively, tolerating a
   // trailing `s` or `es` on the last token so that "Potato" catches
-  // "Potatoes", "Peach" catches "Peaches", and "Apple" catches "Apples". A
-  // leading `\b` is still required so "Apple" does NOT match "Pineapple".
+  // "Potatoes", "Peach" catches "Peaches", and "Apple" catches "Apples".
   //
-  // Multi-word keywords ("Green Bean") also tolerate the plural suffix on
-  // the final word.
-  const escaped = escapeRegex(keyword);
-  return new RegExp(`\\b${escaped}(?:es|s)?\\b`, 'i');
+  // Boundary rules:
+  //   - If the keyword STARTS with a word character, require `\b` at the start
+  //     so that "Apple" does NOT match "Pineapple".
+  //   - If it starts with a non-word character (e.g. "0.0"), no left-boundary
+  //     is imposed (ordinary `\b` wouldn't fire there anyway).
+  //   - End boundary is satisfied by end-of-string or any non-word character.
+  //     This is looser than plain `\b` and correctly handles keywords that
+  //     end in a symbol such as "9m+" or "6+ Months" — the default `\b` would
+  //     fail there because `+` is already a non-word character.
+  const escaped  = escapeRegex(keyword);
+  const startsWord = /^\w/.test(keyword);
+  const endsWord   = /\w$/.test(keyword);
+  const left  = startsWord ? '\\b' : '';
+  // Allow plural `s`/`es` only when the keyword itself ended in a word char
+  // (otherwise "9m+s" makes no sense and we'd just match the original form).
+  const pluralGroup = endsWord ? '(?:es|s)?' : '';
+  // Use a lookahead for the right boundary so we don't get tripped up by
+  // keywords ending in a non-word character.
+  const right = '(?=$|[^\\w])';
+  return new RegExp(`${left}${escaped}${pluralGroup}${right}`, 'i');
 }
 
 // Compile the rules once up front so hot-loop matching stays cheap.
@@ -75,6 +90,20 @@ function compileRules(rules) {
     categoryRules.push({ slug, keywords, brands });
   }
 
+  const categoryOverrides = [];
+  for (const entry of rules.category_overrides || []) {
+    const keywords = (entry.keywords || []).map(k => ({
+      keyword: k,
+      re:      buildKeywordRegex(k),
+    }));
+    const brands = (entry.brands || []).map(b => b.toLowerCase());
+    const overrides = (entry.overrides || []).map(k => ({
+      keyword: k,
+      re:      buildKeywordRegex(k),
+    }));
+    categoryOverrides.push({ slug: entry.slug, keywords, brands, overrides });
+  }
+
   const auditRules = [];
   for (const entry of rules.audit?.exclude_patterns || []) {
     const keywords = (entry.keywords || []).map(k => ({
@@ -85,10 +114,11 @@ function compileRules(rules) {
       keyword: k,
       re:      buildKeywordRegex(k),
     }));
-    auditRules.push({ label: entry.label, keywords, overrides });
+    const brands = (entry.brands || []).map(b => b.toLowerCase());
+    auditRules.push({ label: entry.label, keywords, overrides, brands });
   }
 
-  return { categoryRules, auditRules };
+  return { categoryRules, categoryOverrides, auditRules };
 }
 
 function inferCategory(product, categoryRules) {
@@ -113,8 +143,37 @@ function inferCategory(product, categoryRules) {
   return null;
 }
 
+// Apply category_overrides — a second, brand-aware pass that runs AFTER the
+// primary categorization (regardless of whether the slug came from reconcile
+// or from inference). First match wins. Returns null if no override applies.
+function applyCategoryOverride(product, categoryOverrides) {
+  const name  = product.name_en || '';
+  const brand = (product.brand || '').toLowerCase();
+
+  for (const rule of categoryOverrides) {
+    // Skip this override entirely if the product name hits a disabling phrase
+    // (e.g. "Pot Pie" disables the bread-bakery override).
+    let disabled = false;
+    for (const ov of rule.overrides || []) {
+      if (ov.re.test(name)) { disabled = true; break; }
+    }
+    if (disabled) continue;
+
+    if (brand && rule.brands.includes(brand)) {
+      return { slug: rule.slug, matchedBy: `brand:${brand}` };
+    }
+    for (const kw of rule.keywords) {
+      if (kw.re.test(name)) {
+        return { slug: rule.slug, matchedBy: `keyword:${kw.keyword}` };
+      }
+    }
+  }
+  return null;
+}
+
 function auditProduct(product, auditRules) {
-  const name = product.name_en || '';
+  const name  = product.name_en || '';
+  const brand = (product.brand || '').toLowerCase();
   for (const rule of auditRules) {
     // Short-circuit if the product name hits a per-rule override phrase (e.g.
     // "Non-Alcoholic Beer", "Vodka Sauce") — these keep alcohol keywords in
@@ -124,6 +183,15 @@ function auditProduct(product, auditRules) {
       if (ov.re.test(name)) { overridden = true; break; }
     }
     if (overridden) continue;
+
+    // Exact brand match takes priority — avoids false positives where a
+    // keyword like "Drumstick" (the Nestlé ice cream brand) also appears in
+    // unrelated SKU names ("Chicken Drumsticks", "Klondike Potatoes"). A
+    // brand must match the product's `brand` field exactly (case-insensitive)
+    // to trigger.
+    if (brand && (rule.brands || []).includes(brand)) {
+      return { label: rule.label, matchedBy: `brand:${brand}` };
+    }
 
     for (const kw of rule.keywords) {
       if (kw.re.test(name)) {
@@ -137,20 +205,24 @@ function auditProduct(product, auditRules) {
 // ── Catalog processing ────────────────────────────────────────────────────────
 
 function processCatalog(catalog, compiledRules) {
-  const { categoryRules, auditRules } = compiledRules;
+  const { categoryRules, categoryOverrides, auditRules } = compiledRules;
 
   const stats = {
     total:                 catalog.length,
     alreadySlugged:        0,
     inferredSlug:          0,
+    overrodeSlug:          0,
     stillUnknown:          0,
     inferredBySlug:        {},   // slug → count
     inferredSamples:       {},   // slug → [names]
+    overrodeBySlug:        {},   // slug → count of overrides that landed here
+    overrodeSamples:       {},   // slug → [names]
     unknownSamples:        [],
     auditByLabel:          {},   // label → count
     auditSamples:          {},   // label → [names]
     keepTotal:             0,
     excludeTotal:          0,
+    includedFlipped:       0,    // how many times we forced included=false
   };
 
   const SAMPLE_LIMIT = 20;
@@ -173,10 +245,12 @@ function processCatalog(catalog, compiledRules) {
       p.category_source = 'reconcile';
       stats.alreadySlugged++;
     } else {
-      // Drop any slug we might have inferred on a previous run before
-      // re-running inference — otherwise stale slugs from removed rules would
-      // stick around forever.
-      if (priorSource === 'inferred') p.category_slug = null;
+      // Drop any slug we might have inferred or overridden on a previous run
+      // before re-running inference — otherwise stale slugs from removed
+      // rules would stick around forever.
+      if (priorSource === 'inferred' || priorSource === 'override') {
+        p.category_slug = null;
+      }
 
       const hit = inferCategory(p, categoryRules);
       if (hit) {
@@ -201,6 +275,29 @@ function processCatalog(catalog, compiledRules) {
       }
     }
 
+    // ── Override pass ──────────────────────────────────────────────────────
+    //
+    // Some reconcile-assigned slugs disagree with our taxonomy (e.g.
+    // "Applegate Breakfast Sausage" → cereal-snacks). The override pass runs
+    // against every product so it can reassign those without waiting for
+    // reconcile upstream to be fixed. When an override fires it also fills
+    // in a slug for products that would otherwise be manual/unknown.
+    const override = applyCategoryOverride(p, categoryOverrides);
+    if (override) {
+      const slugChanged = override.slug !== p.category_slug;
+      const wasUnknown  = p.category_slug === null;
+      p.category_slug   = override.slug;
+      p.category_source = 'override';
+      if (slugChanged) {
+        stats.overrodeSlug++;
+        stats.overrodeBySlug[override.slug] = (stats.overrodeBySlug[override.slug] || 0) + 1;
+        const bucket = stats.overrodeSamples[override.slug] ||= [];
+        if (bucket.length < SAMPLE_LIMIT) bucket.push(p.name_en);
+      }
+      // An override rescued a previously-unknown product.
+      if (wasUnknown) stats.stillUnknown = Math.max(0, stats.stillUnknown - 1);
+    }
+
     // ── Audit ───────────────────────────────────────────────────────────────
     const hit = auditProduct(p, auditRules);
     if (hit) {
@@ -210,6 +307,14 @@ function processCatalog(catalog, compiledRules) {
       stats.auditByLabel[hit.label] = (stats.auditByLabel[hit.label] || 0) + 1;
       const bucket = stats.auditSamples[hit.label] ||= [];
       if (bucket.length < SAMPLE_LIMIT) bucket.push(p.name_en);
+
+      // Downstream exports (Rails import, CSV generators) only read the
+      // `included` boolean — they don't inspect audit_action. Flip `included`
+      // to false so the exclusion decision actually reaches customers.
+      if (p.included !== false) {
+        p.included = false;
+        stats.includedFlipped++;
+      }
     } else {
       p.audit_action = 'keep';
       p.audit_reason = null;
@@ -234,6 +339,7 @@ function renderReport(stats, meta) {
   lines.push('## Categorization');
   lines.push(`- Already had slug (reconcile source): ${stats.alreadySlugged.toLocaleString()}`);
   lines.push(`- Slug inferred from rules: ${stats.inferredSlug.toLocaleString()}`);
+  lines.push(`- Slug reassigned by override pass: ${stats.overrodeSlug.toLocaleString()}`);
   lines.push(`- Still null — needs manual review: ${stats.stillUnknown.toLocaleString()}`);
   lines.push('');
 
@@ -247,6 +353,21 @@ function renderReport(stats, meta) {
     for (const slug of inferredSlugs) {
       const count   = stats.inferredBySlug[slug];
       const samples = (stats.inferredSamples[slug] || []).slice(0, 20).join(', ');
+      lines.push(`- **${slug}**: ${count} items — e.g. ${samples}`);
+    }
+  }
+  lines.push('');
+
+  lines.push('### Overrides applied (reconcile slugs reassigned)');
+  const overrodeSlugs = Object.keys(stats.overrodeBySlug).sort(
+    (a, b) => stats.overrodeBySlug[b] - stats.overrodeBySlug[a]
+  );
+  if (overrodeSlugs.length === 0) {
+    lines.push('_(no overrides fired)_');
+  } else {
+    for (const slug of overrodeSlugs) {
+      const count   = stats.overrodeBySlug[slug];
+      const samples = (stats.overrodeSamples[slug] || []).slice(0, 20).join(', ');
       lines.push(`- **${slug}**: ${count} items — e.g. ${samples}`);
     }
   }
@@ -285,6 +406,7 @@ function renderReport(stats, meta) {
   lines.push(`- Keep + categorized: ${categorizedKeep.toLocaleString()}`);
   lines.push(`- Drop (audit excluded): ${stats.excludeTotal.toLocaleString()}`);
   lines.push(`- Unknown category (still kept, flagged): ${stats.stillUnknown.toLocaleString()}`);
+  lines.push(`- \`included\` flipped to false by this run: ${stats.includedFlipped.toLocaleString()}`);
   lines.push('');
 
   return lines.join('\n');
@@ -319,12 +441,14 @@ if (require.main === module) {
 
   console.log('=== categorize-and-audit ===');
   console.log(`Mode: ${dryRun ? 'DRY RUN (no files written)' : 'WRITE'}`);
-  console.log(`Total records:    ${stats.total}`);
-  console.log(`Already slugged:  ${stats.alreadySlugged}`);
-  console.log(`Inferred slug:    ${stats.inferredSlug}`);
-  console.log(`Still null:       ${stats.stillUnknown}`);
-  console.log(`Audit keep:       ${stats.keepTotal}`);
-  console.log(`Audit exclude:    ${stats.excludeTotal}`);
+  console.log(`Total records:     ${stats.total}`);
+  console.log(`Already slugged:   ${stats.alreadySlugged}`);
+  console.log(`Inferred slug:     ${stats.inferredSlug}`);
+  console.log(`Overrode slug:     ${stats.overrodeSlug}`);
+  console.log(`Still null:        ${stats.stillUnknown}`);
+  console.log(`Audit keep:        ${stats.keepTotal}`);
+  console.log(`Audit exclude:     ${stats.excludeTotal}`);
+  console.log(`included flipped:  ${stats.includedFlipped}`);
   if (!dryRun) {
     console.log(`Catalog written:  ${CATALOG}`);
     console.log(`Report written:   ${REPORT_MD}`);
@@ -337,6 +461,7 @@ module.exports = {
   run,
   compileRules,
   inferCategory,
+  applyCategoryOverride,
   auditProduct,
   processCatalog,
   renderReport,

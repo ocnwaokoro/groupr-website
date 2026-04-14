@@ -18,6 +18,7 @@ const {
   run,
   compileRules,
   inferCategory,
+  applyCategoryOverride,
   auditProduct,
   processCatalog,
 } = require('../categorize-and-audit.js');
@@ -181,6 +182,223 @@ test('--dry-run does not mutate the catalog file or write the report', () => {
     assert.equal(before, after, 'dry-run wrote to catalog');
     assert.equal(fs.existsSync(reportPath), false, 'dry-run wrote a report');
   });
+});
+
+// ── Unit: baby_food exclusion ─────────────────────────────────────────────────
+
+test('"Gerber Stage 1 Baby Food" is audit-excluded as baby_food and included=false', () => {
+  const rules = loadRealRules();
+  const catalog = [{
+    name_en:       'Gerber Stage 1 Baby Food',
+    brand:         'gerber',
+    category_slug: null,
+    included:      true,
+  }];
+  processCatalog(catalog, rules);
+  assert.equal(catalog[0].audit_action, 'exclude');
+  assert.equal(catalog[0].audit_reason, 'baby_food');
+  assert.equal(catalog[0].included,     false);
+});
+
+test('"Beech-Nut Stage 2 Baby Food" is audit-excluded as baby_food', () => {
+  const rules = loadRealRules();
+  const catalog = [{
+    name_en:       'Beech-Nut Stage 2 Baby Food, Apple, 4 oz Jar',
+    brand:         'beech-nut',
+    category_slug: null,
+    included:      true,
+  }];
+  processCatalog(catalog, rules);
+  assert.equal(catalog[0].audit_action, 'exclude');
+  assert.equal(catalog[0].audit_reason, 'baby_food');
+  assert.equal(catalog[0].included,     false);
+});
+
+// ── Unit: frozen_dessert exclusion + Nestle Quik syrup override ───────────────
+
+test('"Haagen-Dazs Vanilla Ice Cream" is audit-excluded as frozen_dessert', () => {
+  const rules = loadRealRules();
+  const catalog = [{
+    name_en:       'Haagen-Dazs Vanilla Ice Cream',
+    brand:         'haagen-dazs',
+    category_slug: 'pantry-staples',   // mirrors the real upstream mis-assignment
+    included:      true,
+  }];
+  processCatalog(catalog, rules);
+  assert.equal(catalog[0].audit_action, 'exclude');
+  assert.equal(catalog[0].audit_reason, 'frozen_dessert');
+  assert.equal(catalog[0].included,     false);
+});
+
+test('"Nestlé NESQUIK Chocolate Syrup For Milk Or Ice Cream" is NOT excluded (syrup override)', () => {
+  const rules = loadRealRules();
+  const res = auditProduct({
+    name_en: 'Nestlé NESQUIK Chocolate Syrup For Milk Or Ice Cream',
+    brand:   'nestlé nesquik',
+  }, rules.auditRules);
+  assert.equal(res, null, 'syrup override should have kept this product');
+});
+
+test('"IMUSA Garlic Press" is audit-excluded as non_food_kitchen_tools', () => {
+  const rules = loadRealRules();
+  const catalog = [{
+    name_en:       'IMUSA Garlic Press',
+    brand:         'imusa',
+    category_slug: 'produce',
+    included:      true,
+  }];
+  processCatalog(catalog, rules);
+  assert.equal(catalog[0].audit_action, 'exclude');
+  assert.equal(catalog[0].audit_reason, 'non_food_kitchen_tools');
+  assert.equal(catalog[0].included,     false);
+});
+
+test('"Vaseline Healing Jelly Original" is audit-excluded as non_food_personal_care', () => {
+  const rules = loadRealRules();
+  const catalog = [{
+    name_en:       'Vaseline Healing Jelly Original',
+    brand:         'vaseline',
+    category_slug: null,
+    included:      true,
+  }];
+  processCatalog(catalog, rules);
+  assert.equal(catalog[0].audit_action, 'exclude');
+  assert.equal(catalog[0].audit_reason, 'non_food_personal_care');
+  assert.equal(catalog[0].included,     false);
+});
+
+// ── Unit: regression — alcohol still excluded ─────────────────────────────────
+
+test('regression: alcohol exclusion still flips `included` to false', () => {
+  const rules = loadRealRules();
+  const catalog = [{
+    name_en:       'Angry Orchard Crisp Apple Hard Cider',
+    brand:         'angry orchard',
+    category_slug: null,
+    included:      true,
+  }];
+  processCatalog(catalog, rules);
+  assert.equal(catalog[0].audit_action, 'exclude');
+  assert.equal(catalog[0].audit_reason, 'alcohol');
+  assert.equal(catalog[0].included,     false);
+});
+
+// ── Unit: category_overrides (reconcile-slug reassignment) ────────────────────
+
+test('"Sara Lee Dutch Apple Pie" is overridden from pantry-staples to bread-bakery', () => {
+  const rules = loadRealRules();
+  const catalog = [{
+    name_en:       'Sara Lee Dutch Apple Pie',
+    brand:         'sara lee',
+    category_slug: 'pantry-staples',   // mirrors the real upstream assignment
+    category_source: 'reconcile',
+    included:      true,
+  }];
+  processCatalog(catalog, rules);
+  assert.equal(catalog[0].category_slug,   'bread-bakery');
+  assert.equal(catalog[0].category_source, 'override');
+});
+
+test('"Applegate Breakfast Sausage" is overridden to meat-seafood', () => {
+  const rules = loadRealRules();
+  const catalog = [{
+    name_en:         'Applegate Chicken & Sage Breakfast Sausage',
+    brand:           'applegate',
+    category_slug:   'cereal-snacks',
+    category_source: 'reconcile',
+    included:        true,
+  }];
+  processCatalog(catalog, rules);
+  assert.equal(catalog[0].category_slug,   'meat-seafood');
+  assert.equal(catalog[0].category_source, 'override');
+});
+
+test('"Jif Creamy Peanut Butter" is overridden to pantry-staples', () => {
+  const rules = loadRealRules();
+  const catalog = [{
+    name_en:         'Jif Creamy Peanut Butter',
+    brand:           'jif',
+    category_slug:   'cereal-snacks',
+    category_source: 'reconcile',
+    included:        true,
+  }];
+  processCatalog(catalog, rules);
+  assert.equal(catalog[0].category_slug,   'pantry-staples');
+  assert.equal(catalog[0].category_source, 'override');
+});
+
+test('"Cotton Candy Grapes" is overridden to produce', () => {
+  const rules = loadRealRules();
+  const catalog = [{
+    name_en:         'Cotton Candy Grapes',
+    brand:           null,
+    category_slug:   'cereal-snacks',
+    category_source: 'reconcile',
+    included:        true,
+  }];
+  processCatalog(catalog, rules);
+  assert.equal(catalog[0].category_slug,   'produce');
+  assert.equal(catalog[0].category_source, 'override');
+});
+
+// ── Unit: bread-bakery override does NOT catch Pot Pie or Pumpkin Pie Spice ──
+
+test('"Marie Callender\'s Chicken Pot Pie" is NOT reassigned to bread-bakery', () => {
+  const rules = loadRealRules();
+  const res = applyCategoryOverride({
+    name_en: "Marie Callender's Chicken Pot Pie Large Size Frozen Meal",
+    brand:   "marie callender's",
+  }, rules.categoryOverrides);
+  // Either no override fires, or any override that fires is NOT bread-bakery.
+  if (res) {
+    assert.notEqual(res.slug, 'bread-bakery', 'pot pie should not land in bakery');
+  }
+});
+
+test('"McCormick Pumpkin Pie Spice" is NOT reassigned to bread-bakery', () => {
+  const rules = loadRealRules();
+  const res = applyCategoryOverride({
+    name_en: 'McCormick Pumpkin Pie Spice',
+    brand:   'mccormick',
+  }, rules.categoryOverrides);
+  if (res) {
+    assert.notEqual(res.slug, 'bread-bakery');
+  }
+});
+
+// ── Unit: frozen_dessert does NOT catch chicken drumsticks ────────────────────
+
+test('"Perdue Chicken Drumsticks" is NOT excluded as frozen_dessert', () => {
+  const rules = loadRealRules();
+  const res = auditProduct({
+    name_en: 'Perdue Chicken Drumsticks Value Pack',
+    brand:   'perdue',
+  }, rules.auditRules);
+  assert.equal(res, null);
+});
+
+test('"Klondike Potatoes" (produce, not ice cream) is NOT excluded as frozen_dessert', () => {
+  const rules = loadRealRules();
+  const res = auditProduct({
+    name_en: 'Klondike Potatoes, Petite, Red-Yellow Fleshed',
+    brand:   'klondike',
+  }, rules.auditRules);
+  assert.equal(res, null);
+});
+
+// ── Unit: keyword regex handles non-word endings ──────────────────────────────
+
+test('keyword "9m+" matches "Earth Best Beef Medley 9m+"', () => {
+  const { buildKeywordRegex } = require('../categorize-and-audit.js');
+  const re = buildKeywordRegex('9m+');
+  assert.equal(re.test("Earth Best Beef Medley 9m+"), true);
+});
+
+test('keyword "Stage 1" does NOT match "Stage 10"', () => {
+  const { buildKeywordRegex } = require('../categorize-and-audit.js');
+  const re = buildKeywordRegex('Stage 1');
+  assert.equal(re.test('Product Stage 10 Advanced'), false);
+  assert.equal(re.test('Product Stage 1 Baby'),      true);
 });
 
 // ── Integration: end-to-end counts on a tiny fixture ──────────────────────────

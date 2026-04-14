@@ -232,6 +232,13 @@ category_rules:
       - sfoglini
       - ronzoni
 
+  # NOTE: Frozen prepared meals (Stouffer's, Lean Cuisine, Bagel Bites, Celeste,
+  # Totino's, Red Baron, Kid Cuisine, Banquet Pot Pies, Hebrew National Franks
+  # with Puff Pastry, Tower Isles Jamaican Beef Patties, etc.) currently fall
+  # into pantry-staples via keywords like "Pizza", "Sauce", "Rice", "Noodle",
+  # "Pasta". User decision (2026-04-14): keep them in pantry-staples for now,
+  # but these may warrant their own "frozen-meals" category or a dedicated
+  # audit review pass in a future iteration.
   produce:
     keywords:
       - Apple
@@ -327,6 +334,275 @@ category_rules:
       - hudson river fruit
       - hudson river fruit distributors
       - spring valley fruits
+
+# Category overrides — applied AFTER category_rules, to EVERY product
+# (including those that already have category_slug from reconcile.js).
+#
+# The upstream reconcile.js assigns some categories from Instacart
+# `department` metadata; those assignments disagree with our desired taxonomy
+# in enough cases that we need an explicit override pass here. For example:
+#   - "Applegate Chicken & Sage Breakfast Sausage" (reconcile → cereal-snacks)
+#     should be meat-seafood.
+#   - "Haagen-Dazs Vanilla Ice Cream" (reconcile → pantry-staples) should be
+#     dairy-eggs (but is typically also audit-excluded as frozen_dessert).
+#   - "Jif Creamy Peanut Butter" (reconcile → cereal-snacks) should be
+#     pantry-staples.
+#   - "Sara Lee Dutch Apple Pie" (reconcile → pantry-staples) should be
+#     bread-bakery.
+#   - "Cotton Candy Grapes" (reconcile → cereal-snacks via "Candy" keyword)
+#     should be produce.
+#
+# Each override entry may list:
+#   slug:       required — target category slug
+#   brands:     optional — lowercase exact-match brand strings
+#   keywords:   optional — case-insensitive, word-boundary phrase match
+#               against name_en (same matcher as category_rules)
+#   overrides:  optional — phrases that, if present in name_en, DISABLE this
+#               override for that product (e.g. "Pot Pie" disables the
+#               "Pie → bread-bakery" override so savory pot pies stay in
+#               pantry-staples)
+#
+# First matching entry wins. An item matched by an override has its
+# category_source re-stamped as "override" so it's distinguishable from a
+# fresh inference.
+category_overrides:
+  # Breakfast sausage brands and generic breakfast-sausage SKUs are meat, not
+  # cereal-snack — even though the reconcile heuristic lumped them into
+  # "breakfast" which mapped to cereal-snacks.
+  - slug: meat-seafood
+    brands:
+      - applegate
+    keywords:
+      - Breakfast Sausage
+      - Sausage Links
+      - Sausage Patties
+      - Brown 'N Serve Sausage
+      - Brown'N Serve Sausage
+
+  # Bakery items that reconcile dropped into pantry-staples or cereal-snacks
+  # because of generic "Cake"/"Pie"/"Muffin" usage upstream. Keep the override
+  # list specific to true bakery goods — Pot Pies, Pie Filling, Pie Crust,
+  # Pumpkin Pie Spice, Ice Cream Cake, Cake Mix, Cake Flour are NOT bakery.
+  - slug: bread-bakery
+    overrides:
+      - Pot Pie
+      - Pie Filling
+      - Pie Crust
+      - Pumpkin Pie Spice
+      - Pie Spice
+      - Pudding & Pie
+      - Ice Cream Cake
+      - Ice Cream Cake Cup
+      - Cake Mix
+      - Cake Mate
+      - Cake Flour
+      - Cake Batter
+      - Cake Cone
+      - Cupcake Liner
+      - Frozen Dessert
+      - Pie Ice Cream
+      - Chicken Pot Pie
+      - Turkey Pot Pie
+      - Beef Pot Pie
+    brands:
+      - muffin town
+      - uncle wally's
+      - entenmann's
+      - sara lee
+      - table talk
+      - mrs. smith's
+      - pepperidge farm
+      - zaro's family bakery
+      - zaros family bakery
+      - zaro's
+      - leonard novelty bakery
+      - palermo's primo thin
+      - kimberley's bakeshoppe
+      - café valley bakery
+      - cafe valley bakery
+      - old fashioned
+    keywords:
+      - Muffin
+      - Muffins
+      - Muffin Top
+      - Muffin Tops
+      - Mini Muffin
+      - Cupcake
+      - Cup Cake
+      - Pound Cake
+      - Loaf Cake
+      - Iced Cake
+      - Sheet Cake
+      - Snack Cake
+      - Bundt Cake
+      - Bunt Cake
+      - Coffee Cake
+      - Crumb Cake
+      - Layer Cake
+      - Birthday Cake
+      - Apple Pie
+      - Pecan Pie
+      - Sweet Potato Pie
+      - Blueberry Pie
+      - Cherry Pie
+      - Peach Pie
+      - Banana Cream Pie
+      - Key Lime Pie
+      - Dutch Apple Pie
+      - "Pie, Apple"
+      - "Pie, Pecan"
+      - "Pie, Sweet Potato"
+      - "Pie, Blueberry"
+      - "Pie, Cherry"
+      - "Pie, Peach"
+      - Croissant
+      - Mini Croissant
+      - Danish, Filled
+      - Cheese Danish
+      - Apple Danish
+      - Blueberry Danish
+      - Brioche
+
+  # Dairy overrides — reconcile upstream sometimes doesn't tag ice-cream brands
+  # with a dairy category. We also rely on the audit layer to drop these as
+  # frozen_dessert before they reach the user; this slug assignment just
+  # ensures reports group them sensibly.
+  - slug: dairy-eggs
+    # Brand-pure ice-cream / frozen-dessert brands land here so that, if the
+    # frozen_dessert audit ever decides to keep them, the report still groups
+    # them with other dairy. Brands that also sell non-dairy products
+    # (`klondike` → potatoes, `turkey hill` → iced tea, `green way markets`
+    # → produce) are intentionally NOT listed here.
+    brands:
+      - haagen-dazs
+      - ben & jerry's
+      - halo top
+      - talenti
+      - outshine
+      - yasso
+      - good humor
+      - popsicle
+      - friendly's
+      - drumstick
+      - fatboy
+      - weight watchers
+      - marinos
+      - rosati
+      - melona
+      - bomb pop
+      - fla-vor-ice
+      - whole fruit
+
+  # Pantry staples that reconcile dumped into cereal-snacks: nut butters,
+  # jams/jellies/preserves, applesauce, canned fruit, hummus/guacamole,
+  # baking mixes, baking essentials.
+  - slug: pantry-staples
+    overrides:
+      # Peanut butter as a SNACK product form, not a pantry jar:
+      - Peanut Butter Cup
+      - Peanut Butter Cracker
+      - Peanut Butter Cookie
+      - Peanut Butter Sandwich Cookie
+      - Peanut Butter Ice Cream
+      - Peanut Butter Ice Cream Sugar
+      - Peanut Butter ButterCup
+      - Peanut Butter Filled Pretzel
+      - Peanut Butter Chewy Granola
+      - Peanut Butter Energy Bar
+      - Peanut Butter Granola
+      - Peanut Butter Protein Bar
+      - Peanut Butter Chocolate Chewy
+      - Peanut Butter Dark Chocolate
+      - Peanut Butter in a Crunchy Shell
+      - Peanut Butter & Milk Chocolate
+      - Peanut Butter Chocolate Chip
+      - Peanut Butter Energy
+      - Peanut Butter Fudgy Covered
+      - Peanut Butter Bar
+      - Peanut Butter Mini
+      - Peanut ButterCup
+      - Chunky Peanut Butter Energy
+      - Crunchy Peanut Butter Energy
+      - REESE'S Peanut Butter
+      - Reese's Peanut Butter
+      - PIECES Peanut Butter
+      - m&m's Peanut Butter
+      - M&M's Peanut Butter
+      # Hazelnut spread as snack pack, not pantry jar:
+      - Nutella & Go
+      - Nutella B-ready
+      # Jam/Jelly as sandwich cup, not pantry:
+      - Fruit Snack
+      - Fruit Snacks
+      - Fruit Strip
+      - Fruit Strips
+      # Canned fruit in fruit snacks (Dole cups with gel):
+      - Mandarin Oranges, Orange Gel
+      - Peach Dices In Strawberry Flavored Gel
+    brands:
+      - jif
+      - skippy
+      - peter pan
+      - justin's
+      - pb2
+      - maranatha
+      - once again
+      - nutella
+      - bonne maman
+      - smucker's
+      - musselman's
+      - krusteaz
+      - pearl milling company
+      - hungry jack
+      - kodiak
+      - birch benders
+      - king arthur baking company
+      - bisquick
+      - sabra
+      - esti foods
+      - esti authentic greek
+      - wholly
+      - wholly guacamole
+    keywords:
+      - Peanut Butter
+      - Almond Butter
+      - Cashew Butter
+      - Nut Butter
+      - Hazelnut Spread
+      - Jelly
+      - Jam
+      - Preserves
+      - Marmalade
+      - Fruit Spread
+      - Apple Butter
+      - Applesauce
+      - Apple Sauce
+      - Hummus
+      - Guacamole
+      - Tzatziki
+      - Pancake Mix
+      - Waffle Mix
+      - Brownie Mix
+      - Cake Mix
+      - Bisquick
+      - Muffin Mix
+      - Baking Powder
+      - Baking Soda
+      - Cornstarch
+      - Corn Starch
+      - Vanilla Extract
+      - Mandarin Oranges
+      - Peach Dices
+      - Pineapple Tidbits
+      - Pineapple Chunks
+      - Pineapple Slices
+      - Pineapple in Heavy Syrup
+
+  # Produce overrides — fresh grapes mislabeled as "Candy" by reconcile.
+  - slug: produce
+    keywords:
+      - Cotton Candy Grape
+      - Cotton Candy Grapes
 
 # Audit exclusions — applied AFTER categorization. An excluded product keeps its
 # slug (so reports can still show where it WOULD have landed) but receives
@@ -451,6 +727,162 @@ audit:
         - Modelo
         - Guinness
         - Stella Artois
+
+    - label: frozen_dessert
+      # Ice cream, frozen yogurt bars, frozen fruit bars, ice pops, Italian ice,
+      # sorbet, gelato — all treated as non-staples for Groupr's SNAP-forward
+      # catalog.
+      #
+      # Override phrases carve out NON-frozen-dessert products whose name
+      # happens to contain "Ice Cream" (syrups and toppings that are MADE
+      # FOR ice cream, empty cones/cups intended for ice cream, cake mix,
+      # etc.) and similarly rescue phrases like "Ice Cream Cups, Jumbo"
+      # (Joy's empty wafer cups) while still excluding "Haagen-Dazs Ice Cream
+      # Cup" (which is a cup OF ice cream).
+      overrides:
+        - Ice Cream Syrup
+        - Ice Cream Topping
+        - Ice Cream Sprinkle
+        - Ice Cream Sprinkles
+        - Ice Cream Mix
+        - Ice Cream Cake Cup
+        - Ice Cream Cake Cups
+        - Ice Cream Cake Cone
+        - Ice Cream Cake Cones
+        - Chocolate Syrup For Milk Or Ice Cream
+        - For Milk Or Ice Cream
+        - Syrup For Ice Cream
+        # Coffee flavors / creamers named after ice-cream flavors:
+        - Ice Cream Coffee Creamer
+        # Joy-brand empty wafer cups (see brands list below for the cleaner
+        # way we disambiguate those; these are extra insurance):
+        - "Ice Cream Cups, Jumbo"
+        - "Ice Cream Cups, Color"
+      brands:
+        # Brands whose ENTIRE catalog presence is frozen dessert. Brand match
+        # is preferred over name-keyword match because brand names like
+        # "Klondike" or "Drumstick" also appear in unrelated product names
+        # ("Klondike Potatoes", "Chicken Drumsticks") and a keyword search
+        # would cause false-positive exclusions.
+        - haagen-dazs
+        - ben & jerry's
+        - halo top
+        - talenti
+        - outshine
+        - yasso
+        - good humor
+        - popsicle
+        - friendly's
+        - drumstick
+        - fatboy
+        - marinos
+        - rosati
+        - melona
+        - bomb pop
+        - fla-vor-ice
+        - whole fruit
+        - weight watchers
+        # NOTE: `klondike` is NOT listed here because the brand also sells
+        # potatoes. Klondike ice-cream SKUs are caught by the "Ice Cream" /
+        # "Frozen Dairy Dessert" keywords instead.
+      keywords:
+        - Ice Cream
+        - Frozen Dessert
+        - Frozen Dairy Dessert
+        - Frozen Yogurt
+        - Frozen Fruit Bar
+        - Frozen Fruit Bars
+        - Frozen Juice Bar
+        - Ice Pop
+        - Ice Pops
+        - Freezer Bar
+        - Freezer Bars
+        - Freeze Pop
+        - Italian Ice
+        - Sorbet
+        - Sorbetto
+        - Gelato
+        - Dessert Bar
+        - Dessert Bars
+
+    - label: baby_food
+      # Baby food, infant cereal, infant formula, and toddler purees. Groupr's
+      # catalog targets adult household shoppers; baby-aisle SKUs are handled
+      # through separate infant-nutrition channels.
+      #
+      # Brands that exclusively ship baby/toddler SKUs are matched on the
+      # product's `brand` field (safer than a name-keyword because a brand
+      # token like "Gerber" or "Similac" inside a non-baby SKU name would
+      # still be enough to trigger a keyword-based exclusion). The keyword
+      # list catches unbranded or mis-branded items that still have the
+      # age-gating / staging phrases in their name_en.
+      overrides:
+        # Defensive overrides in case a non-baby product shares a brand name
+        # or phrase (none known as of 2026-04-14, but listed for future edits).
+        - Gerber Adult
+      brands:
+        - beech-nut
+        - gerber
+        - happy baby
+        - happy baby organics
+        - earth's best
+        - earth's best organic
+        - plum organics
+        - sprout organics
+        - peter rabbit organics
+        - serenity kids
+        - pumpkin tree
+        - enfamil
+        - similac
+      keywords:
+        - Baby Food
+        - Baby Snacks
+        - Baby Puree
+        - Baby Cereal
+        - Baby Led Feeding
+        - Baby Puffs
+        - Infant Formula
+        - Infant Cereal
+        - Toddler Food
+        - Toddler Formula
+        - Stage 1
+        - Stage 2
+        - Stage 3
+        - Stage 4
+        - 2nd Foods
+        - 3rd Foods
+        - 4th Foods
+        - 6+ Months
+        - 9+ Months
+        - 12+ Months
+        - 6m+
+        - 9m+
+        - 12m+
+
+    - label: non_food_personal_care
+      # Personal care / OTC items that slip into the grocery catalog from
+      # adjacent aisles. Groupr is food-only; these are excluded.
+      keywords:
+        - Vaseline
+        - Healing Jelly
+        - Petroleum Jelly
+        - Band-Aid
+        - Band-Aids
+        - Aspirin
+        - Ibuprofen
+        - Tylenol
+        - Advil
+        - Acetaminophen
+
+    - label: non_food_kitchen_tools
+      # Kitchen utensils / cookware — food-adjacent but inedible.
+      keywords:
+        - Garlic Press
+        - Can Opener
+        - Vegetable Peeler
+        - Spatula
+        - Colander
+        - Strainer
 
     - label: tobacco
       keywords:
