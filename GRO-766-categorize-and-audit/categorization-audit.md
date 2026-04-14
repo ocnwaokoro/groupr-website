@@ -1,0 +1,30 @@
+# Catalog Categorization + Audit Report
+
+Generated: 2026-04-14T17:06:40.646Z
+Input: 7,229 records
+Rules: /Users/ocnwaokoro/Desktop/groupr-website/devenv-main/scraper/categorization-rules.yaml
+
+## Categorization
+- Already had slug (reconcile source): 7,010
+- Slug inferred from rules: 219
+- Still null — needs manual review: 0
+
+### Inferred by slug
+- **produce**: 78 items — e.g. Acai Exotic 100% Dragon Fruit Cubes, Angry Orchard Crisp Apple Hard Cider, Anjou Pear, Apple, Asian Pear, Bartlett Pear, Best Yet California Blend, Best Yet Frozen Peas & Carrots, Best Yet Italian Blend, Best Yet Mixed Vegetables, Best Yet Pieces & Stems Mushrooms, Best Yet Pieces & Stems Mushrooms, Best Yet Sliced Button Mushrooms, Best Yet Sliced Peaches, Best Yet Sliced Peaches, Bicolor Sweet Corn Package, Birds Eye Extra Sweet Mini Corn On The Cob, Frozen Vegetables, Birds Eye Steamfresh Asian Vegetable Medley, Frozen Vegetables, Birds Eye Steamfresh Baby Broccoli Blend, Frozen Vegetables, Birds Eye Steamfresh Carrots, Broccoli and Cauliflower, Frozen Vegetables
+- **pantry-staples**: 51 items — e.g. Arm & Hammer Baking Soda Fridge Fresh, Arriba! Salsa, with Jalapeno & Cilantro, Roasted Tomato, Med, Arriba! Salsa, with Serrano & Jalapeno, Roasted Tomato, Hot, Arriba! Salsa, with Tomato & Garlic, Roasted Chipotle, Med, Barilla Ditalini - Non-GMO Pasta Made with Durum Wheat Semolina & Kosher Certified, Barilla Gemelli - Non-GMO Pasta Made with Durum Wheat Semolina & Kosher Certified, Barilla Mini Wheels - Non-GMO Pasta Made with Durum Wheat Semolina & Kosher, Best Yet Medium Salsa, Best Yet Mixed Vegetables Carrots Green Beans Corn & Peas, Best Yet Sliced Yellow cling Peaches Heavy syrup, Best Yet Yellow Cling Peach Halves In Heavy Syrup, Birds Eye Broccoli, Carrots, Sugar Snap Peas & Water Chestnuts, Birds Eye Steamfresh Sugar Snap Peas, Frozen Vegetables, Bob's Red Mill Potato Starch, Cantina Salsa, Medium, Chi-Chi's Thick & Chunky Salsa Hot, Chi-Chi's Thick & Chunky Salsa Medium, Chi-Chi's Thick & Chunky Salsa Mild, Clint's Salsa, Texas, Medium, De Cecco Racchette, No. 90
+- **beverages**: 30 items — e.g. Apple & Eve Elmo's Punch Juice, Apple & Eve Fruit Punch Juice, Apple & Eve No Sugar Added Elmo's Punch Juice, Capri Sun Fruit Punch Naturally Flavored Kids Juice Blend Drink Pouches, Hawaiian Punch Fruit Juicy Red Juice Drink, Hi-C Flashin' Fruit Punch Juice Boxes Made With Real Fruit Juice, Honest Kids Fruit Punch Organic Juice Drink, Juicy Juice Fruit Punch, Juicy Juice Fruit Punch, Kool-Aid Bursts Tropical Punch, Kool-Aid Jammers Strawberry Kiwi Flavored Kids 0% Juice Drink Pouches, Kool-Aid Jammers Tropical Punch Flavored Kids 0% Juice Drink Pouches, Minute Maid Berry Punch Juice Drink Carton, Minute Maid Fruit Punch Juice, Minute Maid Fruit Punch Juice Drink Carton, Minute Maid Tropical Punch Juice Drink Carton, Mott's 100% Fruit Punch Juice, Simply High Pulp Orange Juice Bottle, Tropicana Pure Premium 100% Orange Juice Original, No Pulp, No Sugar Added, Tropicana Pure Premium 100% Orange Juice Original, No Pulp, Single Serve
+- **meat-seafood**: 27 items — e.g. Ben's Original Roasted Chicken Flavored Rice Easy Dinner Side, Frozen Beef Oxtail, Gorton's Crunchy Panko Flounder Fillets, Goya Pollock Fillets, Boned & Salted, Frozen, Hormel Hard Salami & Pepperoni Party Tray, Hormel Hard Salami And Pepperoni Party Tray, Lunchables Chicken Dunks Kids Lunch Snack Meal Kit with Capri Sun Drink & Nerds Candy, Lunchables Turkey & American with Chocolate Creme Cookies, Matlaw's Stuffed Clams, New England Style, On‑Cor Chicken Nibblers, Panera Bread Chicken Noodle Soup, Panera Bread Greek Style Chicken Soup (Gluten Free), Panera Bread Lobster Bisque Soup Cup, Perdue Breaded Chicken Breast Nuggets Dinosaur Shapes, Perdue Breaded Popcorn Chicken Bites, Perdue Chicken Breast Nuggets, Perdue Chicken Breast Strips, Perdue Chicken Strips, White Meat, Grilled, Perdue Chicken, Honey Roasted, Perdue Restauant Style Crispy Fillets
+- **dairy-eggs**: 23 items — e.g. Best Yet 3 Cheese Mac Micro Cup, Bob Evans Farms Macaroni & Cheese, Bob Evans Farms Tasteful Sides Singles Macaroni & Cheese, Breakstone's Salted Butter Spread, Tub, Goya Coconut Milk, Goya Coconut Milk, Reduced Fat, Green Giant Broccoli, Cauliflower, Carrots & Cheese Sauce, Green Giant Simply Steam Sauced Veggies, Shoepeg White Corn & Butter Sauce, Green Giant Simply Steam Sauced Veggies, Sweet Peas & Butter Sauce, KA-ME Coconut Milk, La Lechera Dulce de Leche, Lean Cuisine Comfort Cravings Macaroni & Cheese Frozen Entrée, Lunchables Ham & American Cheese Cracker Stackers Kids Lunch Snack Meal Kit with Capri Sun, Lunchables Ham & Cheddar Cheese Cracker Stackers Snack Kit Kids Lunch with Vanilla Cookies, Lunchables Nachos Cheese Dip & Salsa Kids Lunch Snack Meal Kit with Capri Sun & Kit Kat, Lunchables Turkey & American Cheese Cracker Stackers Kids Lunch Snack Meal Kit & Capri Sun, Lunchables Turkey & Cheddar Cheese Cracker Stackers Kids Lunch Snack Meal Kit & Capri Sun, Media Crema Media Crema Table Cream, Next Wave Seafood Mussels in Tomato and Garlic Butter Sauce, PB2 Powdered Peanut Butter, 90% Less Fat, Original
+- **cereal-snacks**: 8 items — e.g. Cotton Candy Grapes, FruitPro Strawberry Protein Oatmeal, Gerber Baby Cereal Rice Canister, Gerber Stage 1 Baby Food Baby Oatmeal Cereal 8G Whole Grains Infant Cereal, Gerber Stage 2 Baby Food Oatmeal Banana Cereal Baby Oatmeal Cereal, Gerber Stage 3 Baby Food Oatmeal Banana Strawberry Cereal Baby Oatmeal Cereal, Lunchables Extra Cheesy Pizza Kids Lunch Snack Kit, Lunchables Extra Cheesy Pizza Kids Lunch Snack Meal Kit with Capri Sun Drink & Airheads
+- **bread-bakery**: 2 items — e.g. Panera Bread Broccoli Cheddar Soup Cup, Panera Bread Broccoli Cheddar Soup Cup
+
+### Still unknown (manual review needed)
+_(none)_
+
+## Audit exclusions
+- **alcohol**: 3 — Angry Orchard Crisp Apple Hard Cider, Flying Embers Mango Margarita, Hudson North Big Apple Imperial Hard Cider
+
+## Totals after this pass
+- Keep + categorized: 7,226
+- Drop (audit excluded): 3
+- Unknown category (still kept, flagged): 0

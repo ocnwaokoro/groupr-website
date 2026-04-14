@@ -1,0 +1,488 @@
+# Categorization + audit rules for scripts/main/categorize-and-audit.js
+#
+# Category slug inference — ORDER MATTERS within a bucket, AND order between
+# buckets matters (first match wins across the whole list). When adding new
+# rules, put more-specific keywords ABOVE more-generic ones (e.g. "Apple Cider"
+# → beverages must be listed before "Apple" → produce, otherwise apple cider
+# lands in produce).
+#
+# Keywords are case-insensitive substrings matched against `name_en`. They are
+# NOT regexes — to be safe, keep them as plain words/phrases.
+#
+# Brand matching is a separate, optional override. A brand on this list wins
+# over any keyword rule.
+category_rules:
+  # Fluid/liquid rules listed BEFORE produce so that "Apple Juice", "Apple
+  # Cider" don't get pulled into produce by the "Apple" keyword.
+  beverages:
+    keywords:
+      - Apple Juice
+      - Apple Cider
+      - Orange Juice
+      - Lemonade
+      - Iced Tea
+      - Sparkling Water
+      - Seltzer
+      - Coconut Water
+      # "Soda" alone is too permissive — it hits "Baking Soda" in pantry
+      # items. Use more specific phrases and rely on brand/cola keywords.
+      - Soda Pop
+      - Club Soda
+      - Cream Soda
+      - Soft Drink
+      - Cola
+      - Juice
+      - Punch
+      - Coffee
+      - Espresso
+      - Tea Bag
+      - Green Tea
+      - Black Tea
+      - Water Bottle
+      - Spring Water
+      - Alkaline Water
+      - Antioxidant Water
+      - Mineral Water
+      - Distilled Water
+      - Purified Water
+      - Gatorade
+      - Powerade
+      - Kool-Aid
+      - Propel
+      - Drink Mix
+      - Energy Drink
+      - Sports Drink
+      - Milkshake
+    brands: []
+
+  dairy-eggs:
+    keywords:
+      - Milk
+      - Yogurt
+      - Greek Yogurt
+      - Cheese
+      - Cream Cheese
+      - Cottage Cheese
+      - Sour Cream
+      - Butter
+      - Margarine
+      - Egg
+      - Eggs
+      - Half & Half
+      - Heavy Cream
+      - Whipped Cream
+      - Creamer
+      - Table Cream
+      - Media Crema
+      - Dulce de Leche
+    brands: []
+
+  meat-seafood:
+    keywords:
+      - Chicken
+      - Beef
+      - Ground Beef
+      - Pork
+      - Turkey
+      - Bacon
+      - Sausage
+      - Ham
+      - Steak
+      - Ribs
+      - Oxtail
+      - Lamb
+      - Veal
+      - Salami
+      - Pepperoni
+      - Fish
+      - Salmon
+      - Shrimp
+      - Tuna
+      - Tilapia
+      - Cod
+      - Flounder
+      - Crab
+      - Lobster
+      - Scallop
+      - Mussels
+      - Clams
+      - Pollock
+    brands:
+      # Brands whose SKU names don't always include a meat keyword (e.g.
+      # "Perdue Crispy Fillets" has neither "Chicken" nor another keyword).
+      - perdue
+
+  bread-bakery:
+    keywords:
+      - Bread
+      - Bagel
+      - Tortilla
+      - Pita
+      - Muffin
+      - Roll
+      - Loaf
+      - Bun
+      - Croissant
+      - Flatbread
+      - Naan
+      - Baguette
+      - Danish
+      - Donut
+      - Doughnut
+      - Pastry
+    brands: []
+
+  cereal-snacks:
+    keywords:
+      - Cereal
+      - Granola
+      - Granola Bar
+      - Oatmeal
+      - Oats
+      - Chip
+      - Chips
+      - Cracker
+      - Crackers
+      - Cookie
+      - Cookies
+      - Pretzel
+      - Popcorn
+      - Snack
+      - Candy
+      - Chocolate
+      - Trail Mix
+      - Fruit Snack
+      - Gummy
+      - Gum
+      - Rice Cake
+      - Protein Bar
+    brands: []
+
+  pantry-staples:
+    keywords:
+      - Pasta
+      - Spaghetti
+      - Macaroni
+      - Penne
+      - Ditalini
+      - Gemelli
+      - Lasagna
+      - Rigatoni
+      - Fettuccine
+      - Linguine
+      - Orzo
+      - Noodle
+      - Ramen
+      - Rice
+      - Quinoa
+      - Couscous
+      - Barley
+      - Lentils
+      - Beans
+      - Chickpeas
+      - Black Beans
+      - Kidney Beans
+      - Pinto Beans
+      - Flour
+      - Sugar
+      - Salt
+      - Pepper
+      - Baking Soda
+      - Baking Powder
+      - Yeast
+      - Oil
+      - Olive Oil
+      - Vinegar
+      - Sauce
+      - Salsa
+      - Ketchup
+      - Mustard
+      - Mayonnaise
+      - Mayo
+      - Syrup
+      - Honey
+      - Jam
+      - Jelly
+      - Peanut Butter
+      - Nut Butter
+      - Spice
+      - Seasoning
+      - Herb
+      - Soup
+      - Broth
+      - Stock
+      - Bouillon
+      - Canned
+      - Starch
+      - Cornmeal
+      - Bread Crumbs
+      - Cornmilk
+      - Racchette
+      - Radiators
+      - Rotelle
+      - Rotini
+      - Farfalle
+      - Tortellini
+      - Cream of Coconut
+      - Coconut Cream
+    brands:
+      # Pasta-only brands whose SKU names use pasta-shape words we haven't
+      # enumerated (e.g. "De Cecco Racchette").
+      - de cecco
+      - sfoglini
+      - ronzoni
+
+  produce:
+    keywords:
+      - Apple
+      - Pear
+      - Banana
+      - Plantain
+      - Papaya
+      - Mango
+      - Lettuce
+      - Spinach
+      - Kale
+      - Arugula
+      - Broccoli
+      - Cabbage
+      - Cauliflower
+      - Tomato
+      - Onion
+      - Garlic
+      - Potato
+      - Yam
+      - Carrot
+      - Celery
+      - Cucumber
+      - Zucchini
+      - Squash
+      - Pumpkin
+      - Cilantro
+      - Parsley
+      - Basil
+      - Mint
+      - Avocado
+      - Orange
+      - Lemon
+      - Lime
+      - Strawberry
+      - Strawberries
+      - Blueberry
+      - Blueberries
+      - Raspberry
+      - Raspberries
+      - Blackberry
+      - Blackberries
+      - Grape
+      - Grapes
+      - Peach
+      - Plum
+      - Watermelon
+      - Melon
+      - Cantaloupe
+      - Honeydew
+      - Pineapple
+      - Kiwi
+      - Dragon Fruit
+      - Papaw
+      - Mushroom
+      - Mushrooms
+      - Bell Pepper
+      - Jalapeno
+      - Corn
+      - Sweet Corn
+      - Eggplant
+      - Radish
+      - Beet
+      - Asparagus
+      - Green Bean
+      - Brussels Sprouts
+      - Bok Choy
+      - Leek
+      - Scallion
+      - Ginger
+      - Herbs
+      - Mango
+      - Guava
+      - Peas
+      - Peach
+      - Mixed Vegetables
+      - Mixed Veggies
+      - Sauced Veggies
+      - Seasoned Veggies
+      - Vegetable Medley
+      - California Blend
+      - Italian Blend
+      - Mediterranean Blend
+      - Asian Blend
+      - Ranch Chopped Kit
+      - Baja Ranch
+      - Greener Selection
+      - Salad Kit
+      - Salad Blend
+    brands:
+      # Fresh-produce-only brands that only package fruits/vegetables under
+      # names that don't always contain a produce keyword.
+      - hudson river fruit
+      - hudson river fruit distributors
+      - spring valley fruits
+
+# Audit exclusions — applied AFTER categorization. An excluded product keeps its
+# slug (so reports can still show where it WOULD have landed) but receives
+# audit_action: "exclude" and an audit_reason label so the final import step
+# drops it.
+#
+# Keywords are case-insensitive substrings matched against `name_en`. The FIRST
+# matching label wins (order matters for reporting, not for correctness — a
+# product with multiple matches gets labelled by the first one in the list).
+audit:
+  exclude_patterns:
+    - label: alcohol
+      # If name_en matches ANY of these override phrases, the alcohol rule is
+      # skipped for that product. This keeps clearly-non-alcoholic products
+      # (Malta soda, non-alcoholic beer, vodka-pasta-sauce, beer-battered
+      # onion rings, bourbon-flavored frozen dinners) out of the exclusion
+      # pile. Overrides are matched as word-boundary, case-insensitive
+      # substrings.
+      overrides:
+        - Non-Alcoholic
+        - Non Alcoholic
+        - Alcohol Free
+        - Alcohol-Free
+        - "0.0"
+        # Vodka-as-flavoring (pasta sauces, etc.)
+        - Vodka Sauce
+        - Vodka Cream
+        - Vodka Pasta
+        - Vodka Arrabbiata
+        - Alla Vodka
+        - Sauce, Vodka
+        # Bourbon-as-flavoring
+        - Bourbon Chicken
+        - Bourbon Glaze
+        - Bourbon BBQ
+        - Bourbon Hot Sauce
+        - Bourbon Maple
+        - Honey Bourbon
+        - Whiskey Maple
+        - Whiskey BBQ
+        - Whiskey Glaze
+        # Cooking uses
+        - Beer Battered
+        - Beer-Battered
+        - Cooking Wine
+        - Wine Vinegar
+        - Wine Vinaigrette
+        - Champagne Vinegar
+        - Champagne Style
+        - Champagne Vinaigrette
+        - "Vinegar, Red Wine"
+        - "Vinegar, White Wine"
+        - Whiskey Flavored
+        - Whiskey Flavor
+        - Whiskey Seasoning
+        # Non-alcoholic malt drinks (Malta soda, chocolate malt)
+        - Malta Goya
+        - Goya Malta
+        - Chocolate Malt
+        - Malted Milk
+        # Flavor extracts
+        - Rum Extract
+        - Rum Flavor
+        - Almond Extract
+        # Marinades, mixers (non-alcoholic)
+        - Margarita Mix
+        - Mojito Mix
+        - Mojito Lime Marinade
+        - Mojito Marinade
+        - Daiquiri Mix
+        - Cocktail Sauce
+        - Sauce, Margarita
+        - Mixer, Strawberry Daiquiri
+        - "Daiquiri/Margarita"
+      keywords:
+        # Only list phrases that unambiguously imply alcohol. Plain "Beer",
+        # "Ale", "Cocktail" are intentionally NOT here because they produce
+        # false positives against "Root Beer", "Ginger Ale", "Fruit Cocktail",
+        # "Juice Cocktail", etc. Likewise "Gin" (gingerbread), "Scotch" (tape),
+        # "Rum" (cake) are too risky; rely on brand matches for those.
+        - Hard Cider
+        - Hard Seltzer
+        - Hard Lemonade
+        - Malt Beverage
+        - Craft Beer
+        - IPA
+        - Red Wine
+        - White Wine
+        - Rosé Wine
+        - Rose Wine
+        - Sparkling Wine
+        - Table Wine
+        - Cooking Wine
+        - Champagne
+        - Prosecco
+        - Sake
+        - Liquor
+        - Vodka
+        - Whiskey
+        - Whisky
+        - Bourbon
+        - Tequila
+        - Mezcal
+        - Cognac
+        # Cocktail-style pre-mixed alcoholic drinks (these brand/SKU phrasings
+        # in the catalog are all alcoholic):
+        - Margarita
+        - Mojito
+        # Explicit alcohol brand names seen in the catalog.
+        - Angry Orchard
+        - Smirnoff Ice
+        - White Claw
+        - Truly Hard
+        - Twisted Tea
+        - Mike's Hard
+        - Bud Light
+        - Budweiser
+        - Coors
+        - Heineken
+        - Corona Extra
+        - Corona Light
+        - Modelo
+        - Guinness
+        - Stella Artois
+
+    - label: tobacco
+      keywords:
+        - Cigarette
+        - Cigar
+        - Tobacco
+        - Nicotine
+        - Vape
+        - E-Cigarette
+
+    - label: gift_card
+      keywords:
+        - Gift Card
+        - Prepaid Card
+
+    - label: pet_food
+      keywords:
+        - Dog Food
+        - Cat Food
+        - Pet Food
+        - Dog Treat
+        - Cat Treat
+        - Cat Litter
+        - Dog Chew
+
+    - label: hot_prepared
+      overrides:
+        - Rotisserie Chicken Seasoning
+        - Rotisserie Chicken Flavored
+        - Rotisserie Chicken Flavor
+      keywords:
+        - Hot Bar
+        - Rotisserie Chicken
+        - Sushi Platter
+        - Made to Order

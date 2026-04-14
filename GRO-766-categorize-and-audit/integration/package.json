@@ -1,0 +1,17 @@
+{
+  "scripts": {
+    "extract": "node scripts/main/run-extraction.js",
+    "capture-zone": "node scripts/utility/capture-zone-postal.js",
+    "reconcile": "node scripts/main/reconcile.js",
+    "categorize-and-audit": "node scripts/main/categorize-and-audit.js",
+    "export-xlsx": "node scripts/main/export-xlsx.js",
+    "catalog": "node scripts/main/reconcile.js && node scripts/main/categorize-and-audit.js && node scripts/main/export-xlsx.js",
+    "test": "node --test scripts/main/__tests__/categorize-and-audit.test.js"
+  },
+  "dependencies": {
+    "exceljs": "^4.4.0",
+    "js-yaml": "^4.1.1",
+    "pg": "^8.18.0",
+    "puppeteer": "^23.0.0"
+  }
+}
